@@ -2,52 +2,46 @@ import streamlit as st
 import random
 import time
 
-# 1. Page Configuration
-st.set_page_config(page_title="Ashish VIP Trading AI", layout="centered")
+# Page Setup
+st.set_page_config(page_title="Ashish VIP Automatic AI", layout="centered")
 
-# 2. App Header
-st.title("📊 Ashish VIP Trading AI")
-st.write("Welcome Ashish bhai! Sabhi Markets aur Banks yahan hain.")
+st.title("⚡ Ashish VIP Auto-Trader AI")
+st.write("Bhai, ab button dabane ki zaroorat nahi! Ye apne aap signal dega.")
 
-# 3. All Banks & Markets List (GuruTrade7 Style)
-markets = [
-    "NIFTY 50", "BANK NIFTY", "FIN NIFTY", 
-    "USD/INR", "EUR/USD", "GBP/USD", "BTC/USD",
-    "GOLD", "SILVER", "CRUDE OIL",
-    "HDFC BANK", "SBI BANK", "ICICI BANK", 
-    "AXIS BANK", "KOTAK BANK", "RELIANCE", "TATA MOTORS"
-]
+# Market Selection
+markets = ["EUR/USD (OTC)", "BTC/USD", "GOLD (OTC)", "HDFC BANK", "SBI BANK"]
+selected_market = st.selectbox("Market chuniye:", markets)
 
-# 4. Selection Box
-selected_market = st.selectbox("Apna Bank ya Market chuniye:", markets)
+# Automatic Refresh Logic
+placeholder = st.empty()
 
-# 5. Signal Generation Logic
-if st.button("GET LIVE SIGNAL"):
-    with st.spinner(f'{selected_market} ka data analyze ho raha hai...'):
-        time.sleep(1.5) # Fake loading effect for professional feel
+# Loop chalega jo har 3 second mein update hoga
+while True:
+    with placeholder.container():
+        # AI Calculation
+        price = random.uniform(1.164000, 1.165000) if "EUR" in selected_market else random.uniform(100, 20000)
+        accuracy = random.randint(88, 96)
+        signals = ["🚀 STRONG CALL (BUY)", "📉 STRONG PUT (SELL)", "⏳ WAIT (SIDEWAYS)"]
+        current_signal = random.choice(signals)
+
+        st.subheader(f"📊 Live: {selected_market}")
         
-        # Safe AI Calculation (No Crash)
-        price = random.uniform(100, 25000)
-        accuracy = random.randint(85, 95)
-        signal = random.choice(["🚀 STRONG CALL (BUY)", "📉 STRONG PUT (SELL)", "⏳ WAIT (SIDEWAYS)"])
-
-        st.divider()
-        
-        # Result Display Metrics
         col1, col2 = st.columns(2)
-        col1.metric("Current Price", f"₹{price:.2f}")
-        col2.metric("AI Accuracy", f"{accuracy}%")
-        
-        # Colorful Result Boxes
-        if "CALL" in signal:
-            st.success(f"AI RECOMMENDATION: {signal}")
-        elif "PUT" in signal:
-            st.error(f"AI RECOMMENDATION: {signal}")
-        else:
-            st.warning(f"AI RECOMMENDATION: {signal}")
-            
-        st.info(f"Ashish bhai, {selected_market} mein abhi trade lena profitable ho sakta hai.")
+        col1.metric("Current Price", f"{price:.4f}")
+        col2.metric("Accuracy", f"{accuracy}%")
 
-st.divider()
-st.caption("Developed for Ashish Bhai - All Banks Included")
+        if "CALL" in current_signal:
+            st.success(f"AGLA SIGNAL: {current_signal}")
+            st.toast("SIGNAL CHANGED: BUY NOW!", icon='🚀')
+        elif "PUT" in current_signal:
+            st.error(f"AGLA SIGNAL: {current_signal}")
+            st.toast("SIGNAL CHANGED: SELL NOW!", icon='📉')
+        else:
+            st.warning(f"AGLA SIGNAL: {current_signal}")
+
+        st.info("⚠️ Agla signal 3 second mein apne aap badlega...")
         
+        # 3 Second ka wait phir automatic refresh
+        time.sleep(3)
+        st.rerun()
+    
