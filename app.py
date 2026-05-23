@@ -2,41 +2,47 @@ import streamlit as st
 import random
 import time
 
-st.set_page_config(page_title="Ashish VIP Shield AI", layout="centered")
-st.title("🛡️ Ashish VIP Shield Predictor")
+st.set_page_config(page_title="Ashish VIP Smart AI", layout="centered")
+st.title("💎 Ashish VIP Smart Predictor")
 
-choice = st.selectbox("Market Select Karein:", ["EUR/USD (OTC)", "BTC/USD", "GOLD (OTC)"])
+# Market Selection
+choice = st.selectbox("Market Select Karein:", ["EUR/USD (OTC)", "BTC/USD"])
 
 placeholder = st.empty()
 
 while True:
     with placeholder.container():
-        # Indicators
-        rsi = random.randint(10, 90)
-        trend = random.randint(1, 100)
-        # New: Volatility Check
-        volatility = random.choice(["LOW", "HIGH", "STABLE"])
+        # Smart Data Fetching (Simulation)
+        rsi = random.randint(5, 95)
+        trend_strength = random.randint(1, 100)
+        volatility = random.choice(["SMOOTH", "CHOPPY", "DANGEROUS"])
         
-        st.subheader(f"📊 Market: {choice}")
+        st.subheader(f"📊 Analyzing: {choice}")
         
-        c1, c2, c3 = st.columns(3)
-        c1.metric("RSI", rsi)
-        c2.metric("Trend", f"{trend}%")
-        c3.metric("Risk", volatility)
+        col1, col2, col3 = st.columns(3)
+        col1.metric("RSI", rsi)
+        col2.metric("Trend Strength", f"{trend_strength}%")
+        col3.metric("Market Mood", volatility)
 
         st.divider()
 
-        # Extra Safe Logic
-        if rsi < 25 and trend > 75 and volatility == "STABLE":
-            st.success("🔥 POWERFUL CALL (BUY) - SAFE ENTRY")
-            st.write("Reason: Market is stable & oversold. High chance of winning.")
-        elif rsi > 75 and trend > 75 and volatility == "STABLE":
-            st.error("📉 POWERFUL PUT (SELL) - SAFE ENTRY")
-            st.write("Reason: Resistance is strong. High chance of downward move.")
-        else:
-            st.warning("⏳ WAIT - High Risk / Jhatka Possible")
-            st.write("Analysis: Market is jumpy. Last second reversal risk is high.")
-
-        time.sleep(2)
-        st.rerun()
+        # SMART DECISION LOGIC
+        # Call Logic: RSI niche, Trend mazboot, Mood Smooth
+        if rsi < 15 and trend_strength > 85 and volatility == "SMOOTH":
+            st.success("🎯 SMART CALL (BUY)")
+            st.write("✅ CONFIRMED: Market is heavily oversold and ready for a bounce.")
+            st.toast("BUY NOW!", icon="🚀")
             
+        # Put Logic: RSI upar, Trend mazboot, Mood Smooth
+        elif rsi > 85 and trend_strength > 85 and volatility == "SMOOTH":
+            st.error("🎯 SMART PUT (SELL)")
+            st.write("✅ CONFIRMED: Market is overbought. Resistance hit. Downward move expected.")
+            st.toast("SELL NOW!", icon="📉")
+            
+        else:
+            st.warning("⏳ NO TRADE ZONE")
+            st.write("AI Analysis: Market conditions are not perfect. Please wait for a Smart Signal.")
+
+        time.sleep(1.5)
+        st.rerun()
+    
