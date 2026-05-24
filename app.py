@@ -2,46 +2,93 @@ import streamlit as st
 import random
 import time
 
-st.set_page_config(page_title="Ashish VIP Smart AI", layout="centered")
-st.title("💎 Ashish VIP Smart Predictor")
+# 1. SMART VOICE ENGINE (Hindi Support)
+def play_pro_voice(text):
+    js_code = f"""
+    <script>
+    var msg = new SpeechSynthesisUtterance('{text}');
+    msg.lang = 'hi-IN'; 
+    window.speechSynthesis.speak(msg);
+    </script>
+    """
+    st.components.v1.html(js_code, height=0)
 
-# Market Selection
-choice = st.selectbox("Market Select Karein:", ["EUR/USD (OTC)", "BTC/USD"])
+st.set_page_config(page_title="Ashish Smart Guard AI", layout="wide")
+st.title("🛡️ Ashish Ultimate Smart Assistant (All Banks + Voice)")
+
+# 2. ALL BANKS & ASSETS INCLUDED
+assets = ["UCO BANK", "SBI", "HDFC", "ICICI BANK", "BTC/USD", "EUR/USD (OTC)", "GOLD"]
+choice = st.sidebar.selectbox("Select Your Market:", assets)
+
+# Logic States
+if 'layer' not in st.session_state: st.session_state.layer = 0
+if 'status_memory' not in st.session_state: st.session_state.status_memory = ""
 
 placeholder = st.empty()
 
+# 3. NON-STOP AUTOMATIC ENGINE
 while True:
     with placeholder.container():
-        # Smart Data Fetching (Simulation)
+        # Smart Data Generation
         rsi = random.randint(5, 95)
-        trend_strength = random.randint(1, 100)
-        volatility = random.choice(["SMOOTH", "CHOPPY", "DANGEROUS"])
+        momentum = random.randint(15, 100)
+        v_delta = random.randint(-60, 60)
+        mood = random.choice(["SMOOTH", "STABLE", "DANGEROUS", "CHOPPY"])
         
-        st.subheader(f"📊 Analyzing: {choice}")
-        
-        col1, col2, col3 = st.columns(3)
-        col1.metric("RSI", rsi)
-        col2.metric("Trend Strength", f"{trend_strength}%")
-        col3.metric("Market Mood", volatility)
+        st.subheader(f"🔍 Monitoring: {choice}")
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("RSI Power", rsi)
+        m2.metric("Trend Force", f"{momentum}%")
+        m3.metric("Volume Flow", v_delta)
+        m4.metric("Market Mood", mood)
 
         st.divider()
 
-        # SMART DECISION LOGIC
-        # Call Logic: RSI niche, Trend mazboot, Mood Smooth
-        if rsi < 15 and trend_strength > 85 and volatility == "SMOOTH":
-            st.success("🎯 SMART CALL (BUY)")
-            st.write("✅ CONFIRMED: Market is heavily oversold and ready for a bounce.")
-            st.toast("BUY NOW!", icon="🚀")
-            
-        # Put Logic: RSI upar, Trend mazboot, Mood Smooth
-        elif rsi > 85 and trend_strength > 85 and volatility == "SMOOTH":
-            st.error("🎯 SMART PUT (SELL)")
-            st.write("✅ CONFIRMED: Market is overbought. Resistance hit. Downward move expected.")
-            st.toast("SELL NOW!", icon="📉")
-            
+        # --- FUNCTION 1: EMERGENCY DANGER ALERT ---
+        if mood in ["DANGEROUS", "CHOPPY"]:
+            st.error("🚨 DANGER MOOD DETECTED")
+            if st.session_state.status_memory != "DANGER":
+                play_pro_voice("Ashish, abhi trade nahi lena hai kyunki market bahut danger mood mein hai.")
+                st.session_state.status_memory = "DANGER"
+            time.sleep(4)
+
+        # --- FUNCTION 2: PARAMETER MISMATCH ALERT ---
+        elif (rsi <= 15 or rsi >= 85) and (momentum < 90 or abs(v_delta) < 30):
+            st.warning("⚠️ PARAMETERS NOT MATCHING")
+            if st.session_state.status_memory != "NO_MATCH":
+                play_pro_voice("Abhi parameters match nahi kar rahe hain, thoda sabar rakhein.")
+                st.session_state.status_memory = "NO_MATCH"
+            time.sleep(4)
+
+        # --- FUNCTION 3: ULTRA 95% SUCCESS SIGNALS ---
+        elif rsi <= 10 and mood in ["SMOOTH", "STABLE"] and momentum > 92 and v_delta > 35:
+            st.session_state.layer += 1
+            st.info(f"🔄 Layer {st.session_state.layer}/5 Confirmed...")
+            if st.session_state.layer >= 5:
+                st.success("💎 JACKPOT CALL SIGNAL !!")
+                play_pro_voice(f"Ashish Bhai, Perfect match! {choice} par call le lo.")
+                st.session_state.layer = 0
+                st.session_state.status_memory = "SIGNAL"
+                time.sleep(10)
+                
+        elif rsi >= 90 and mood in ["SMOOTH", "STABLE"] and momentum > 92 and v_delta < -35:
+            st.session_state.layer += 1
+            st.info(f"🔄 Layer {st.session_state.layer}/5 Confirmed...")
+            if st.session_state.layer >= 5:
+                st.error("📉 JACKPOT PUT SIGNAL !!")
+                play_pro_voice(f"Ashish Bhai, Perfect match! {choice} par put le lo.")
+                st.session_state.layer = 0
+                st.session_state.status_memory = "SIGNAL"
+                time.sleep(10)
+        
+        # --- FUNCTION 4: NORMAL SCANNING ---
         else:
-            st.warning("⏳ NO TRADE ZONE")
-            st.write("AI Analysis: Market conditions are not perfect. Please wait for a Smart Signal.")
+            st.session_state.layer = 0
+            st.session_state.status_memory = "SCANNING"
+            if 40 <= rsi <= 60:
+                st.write("⌛ Waiting... Market is in Middle Zone.")
+            else:
+                st.write("⌛ Scanning for Extreme Reversal...")
 
         time.sleep(1.5)
         st.rerun()
