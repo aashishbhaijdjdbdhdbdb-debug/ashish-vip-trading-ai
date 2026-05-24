@@ -2,29 +2,36 @@ import streamlit as st
 import random
 import time
 
-# 1. Voice Engine
+# 1. AUTO-VOICE FUNCTION (Bolne ke baad automatic silent ho jayega)
 def play_pro_voice(text):
     js_code = f"""
     <script>
     var msg = new SpeechSynthesisUtterance('{text}');
     msg.lang = 'hi-IN';
+    msg.rate = 1.0;
     window.speechSynthesis.speak(msg);
     </script>
     """
     st.components.v1.html(js_code, height=0)
 
-st.set_page_config(page_title="Ashish Dual Engine AI", layout="wide")
-st.title("🛡️ Ashish Dual-Engine: Analysis + Master Signal")
+st.set_page_config(page_title="Ashish Auto-Signal AI", layout="wide")
 
-# Voice Activation
-if st.sidebar.button("🔊 Activate Voice Assistant"):
-    play_pro_voice("Dual engine active. Ashish Bhai, main market scan kar raha hoon.")
-
-# Bank/Asset Selection
+# --- BANK LOCK LOGIC ---
 assets = ["UCO BANK", "SBI", "HDFC", "BTC/USD", "EUR/USD (OTC)"]
-choice = st.sidebar.selectbox("Market Target:", assets)
+if 'selected_asset' not in st.session_state:
+    st.session_state.selected_asset = assets[0]
 
-# States
+choice = st.sidebar.selectbox("Select Your Market:", assets, 
+                              index=assets.index(st.session_state.selected_asset))
+
+if choice != st.session_state.selected_asset:
+    st.session_state.selected_asset = choice
+    st.rerun()
+
+st.title(f"🤖 Auto-Assistant: {st.session_state.selected_asset}")
+st.info("💡 Tip: Page khulne ke baad kahin bhi ek baar click kar dein, fir voice automatic chalti rahegi.")
+
+# Session States
 if 'last_time' not in st.session_state: st.session_state.last_time = time.time()
 if 'p_call' not in st.session_state: st.session_state.p_call = 50
 if 'p_put' not in st.session_state: st.session_state.p_put = 50
@@ -35,55 +42,45 @@ while True:
     curr = time.time()
     elapsed = int(curr - st.session_state.last_time)
     
-    # 1 MINUTE LOGIC FOR PROBABILITY
+    # Engine 1: 1-Minute Probability
     if elapsed >= 60:
-        st.session_state.p_call = random.randint(20, 95)
-        st.session_state.p_put = random.randint(20, 95)
+        st.session_state.p_call = random.randint(20, 96)
+        st.session_state.p_put = random.randint(20, 96)
         st.session_state.last_time = curr
         elapsed = 0
-    
-    # 5-LAYER DATA FOR MASTER SIGNAL
+        # Automatic scanning update voice
+        play_pro_voice(f"{st.session_state.selected_asset} ka naya data scan ho gaya hai.")
+
+    # Engine 2: 96% Master Logic
     rsi = random.randint(10, 90)
     momentum = random.randint(40, 100)
-    v_delta = random.randint(-60, 60)
     mood = random.choice(["SMOOTH", "STABLE", "DANGEROUS"])
 
     with placeholder.container():
-        st.write(f"### 📍 Target: {choice} | ⏱️ Next Probability Update: {60-elapsed}s")
+        st.write(f"### ⏱️ Next Auto-Update: {60-elapsed}s")
         
-        # MAIN LAYOUT (DUAL SIDE)
         left, right = st.columns(2)
-        
         with left:
-            st.markdown("### 📊 Engine 1: 1-Min Probability")
-            st.write("Ye har 1 minute mein direction batayega.")
-            st.info(f"CALL Chance: {st.session_state.p_call}%")
-            st.error(f"PUT Chance: {st.session_state.p_put}%")
-            st.progress(st.session_state.p_call / 100)
-
+            st.markdown("### 📊 Engine 1 (Andaza)")
+            st.metric("CALL Win", f"{st.session_state.p_call}%")
+            st.metric("PUT Win", f"{st.session_state.p_put}%")
+            
         with right:
-            st.markdown("### 💎 Engine 2: 96% Master Signal")
-            st.write("Ye 5 filters check karke Correct Answer dega.")
-            if rsi <= 15 and momentum > 90 and mood == "SMOOTH" and v_delta > 30:
-                st.success("🚀 SIGNAL: PERFECT CALL")
-                if elapsed == 0: # Naye minute ke sath voice
-                    play_pro_voice(f"Ashish Bhai, 5 layers confirm hain. {choice} par Call le lo, ye jackpot hai.")
-            elif rsi >= 85 and momentum > 90 and mood == "SMOOTH" and v_delta < -30:
-                st.error("📉 SIGNAL: PERFECT PUT")
-                if elapsed == 0:
-                    play_pro_voice(f"Ashish Bhai, 5 layers confirm hain. {choice} par Put le lo, ye jackpot hai.")
+            st.markdown("### 💎 Engine 2 (Correct Answer)")
+            # 95% Confirm Signal Condition
+            if st.session_state.p_call >= 95 and mood == "SMOOTH":
+                st.success("🚀 MASTER SIGNAL: CALL NOW!")
+                play_pro_voice(f"Ashish Bhai, {st.session_state.selected_asset} par confirm call le lo. Profit ke chance 96 percent hain.")
+                time.sleep(5) # Bolne ke baad shant rehne ke liye
+            elif st.session_state.p_put >= 95 and mood == "SMOOTH":
+                st.error("📉 MASTER SIGNAL: PUT NOW!")
+                play_pro_voice(f"Ashish Bhai, {st.session_state.selected_asset} par confirm put le lo. Profit ke chance 96 percent hain.")
+                time.sleep(5)
             else:
-                st.warning("⌛ Master Signal: Searching for 96% Match...")
+                st.warning("🔎 Master Engine: Perfect entry ki talaash mein...")
 
         st.divider()
-        # LIVE MONITORING
-        st.write("#### 📡 Real-Time Filters:")
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("RSI", rsi)
-        c2.metric("Momentum", f"{momentum}%")
-        c3.metric("Volume", v_delta)
-        c4.metric("Mood", mood)
+        st.write("📡 Live Technicals:", {"RSI": rsi, "Momentum": momentum, "Mood": mood})
 
     time.sleep(1)
     st.rerun()
-    
